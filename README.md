@@ -1,8 +1,8 @@
 Copied leven source code
 
-migrated for visual studio 2022
-added libraries
-excluded bullet physics
+migrated for visual studio 2022,
+,added libraries
+,excluded bullet physics
 
 -mook-
 
