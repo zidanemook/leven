@@ -8,6 +8,7 @@
 #include	"slab_allocator.h"
 #include	"double_buffer.h"
 #include	"pool_allocator.h"
+#include	"sdl_wrapper.h"
 #include	"glm_hash.h"
 #include	"threadpool.h"
 
@@ -25,7 +26,7 @@
 #include	<thread>
 #include	<condition_variable>
 #include	<atomic>
-#include	"sdl_wrapper.h"
+
 #include	<Remotery.h>
 #include	<unordered_map>
 
@@ -92,7 +93,7 @@ T Scale_PhysicsToWorld(const T& worldValue)
 
 // ----------------------------------------------------------------------------
 
-btBroadphaseInterface* g_broadphase = nullptr;
+static btBroadphaseInterface* g_broadphase = nullptr;
 btCollisionDispatcher* g_dispatcher = nullptr;
 btConstraintSolver* g_solver = nullptr;
 btDefaultCollisionConfiguration* g_collisionCfg = nullptr;
@@ -219,7 +220,7 @@ void SpawnPlayerImpl(const glm::vec3& origin)
 
 void UpdatePlayer(const float deltaT, const float elapsedTime)
 {
-	rmt_ScopedCPUSample(UpdatePlayer);
+	rmt_ScopedCPUSample(UpdatePlayer, 0);
 
 	if (!g_player.body || !g_player.ghost)
 	{
@@ -359,7 +360,7 @@ void PhysicsThreadFunction()
 		const float elapsedTime = ((float)prevTime / 1000.f) - startTime;
 
 		{
-			rmt_ScopedCPUSample(Physics_BulletStep);
+			rmt_ScopedCPUSample(Physics_BulletStep, 0);
 			g_dynamicsWorld->stepSimulation(dt);
 		}
 
@@ -391,7 +392,7 @@ void PhysicsThreadFunction()
 		}
 		
 		{
-			rmt_ScopedCPUSample(UpdateBodies);
+			rmt_ScopedCPUSample(UpdateBodies, 0);
 
 			for (int i = 0; i < g_rigidBodies.size(); i++)
 			{
@@ -472,11 +473,14 @@ bool Physics_Initialise(const AABB& worldBounds)
 
 	g_broadphase = 
 		new btAxisSweep3(Scale_WorldToPhysics(worldMin), Scale_WorldToPhysics(worldMax), maxHandles, pairCache);
+
 	g_solver = new btSequentialImpulseConstraintSolver;
 	g_dynamicsWorld = new btDiscreteDynamicsWorld(g_dispatcher, g_broadphase, g_solver, g_collisionCfg);
+	g_dynamicsWorld->getPairCache();
 	g_dynamicsWorld->setGravity(btVector3(0, -9.8f, 0));
 	g_dynamicsWorld->getSolverInfo().m_solverMode |= SOLVER_ENABLE_FRICTION_DIRECTION_CACHING;
 	g_dynamicsWorld->getSolverInfo().m_numIterations = 5;
+	
 
 	g_physicsQuit = false;
 	g_physicsThread = std::thread(PhysicsThreadFunction);
@@ -548,11 +552,11 @@ std::vector<RenderMesh*> Physics_GetRenderData(const Frustum& frustum)
 
 void AddMeshToWorldImpl(const glm::vec3& origin, MeshBuffer* buffer, PhysicsMeshData* meshData)
 {
-	rmt_ScopedCPUSample(Physics_AddMeshToWorld);
+	rmt_ScopedCPUSample(Physics_AddMeshToWorld, 0);
 
 	// TODO meshData->vertices and meshData->triangles should be created on the GPU
 	{
-		rmt_ScopedCPUSample(Copy);
+		rmt_ScopedCPUSample(Copy, 0);
 
 		LVN_ASSERT(!meshData->vertices);
 		LVN_ASSERT(meshData->numVertices == 0);
@@ -573,7 +577,7 @@ void AddMeshToWorldImpl(const glm::vec3& origin, MeshBuffer* buffer, PhysicsMesh
 	}
 
 	{
-		rmt_ScopedCPUSample(Bullet);
+		rmt_ScopedCPUSample(Bullet, 0);
 
 		btIndexedMesh indexedMesh;
 		indexedMesh.m_vertexBase = (const unsigned char*)&meshData->vertices[0];
@@ -604,7 +608,7 @@ void AddMeshToWorldImpl(const glm::vec3& origin, MeshBuffer* buffer, PhysicsMesh
 
 void RemoveMeshData(PhysicsMeshData* meshData)
 {
-	rmt_ScopedCPUSample(RemoveMeshData);
+	rmt_ScopedCPUSample(RemoveMeshData, 0);
 	LVN_ASSERT(meshData);
 	LVN_ASSERT(std::this_thread::get_id() == g_physicsThread.get_id());
 
@@ -634,7 +638,7 @@ void ReplaceCollisionNodeMesh(
 	WorldCollisionNode* node,
 	PhysicsMeshData* newMesh)
 {
-	rmt_ScopedCPUSample(ReplaceCollisionMeshes);
+	rmt_ScopedCPUSample(ReplaceCollisionMeshes, 0);
 	LVN_ASSERT(std::this_thread::get_id() == g_physicsThread.get_id());
 
 	PhysicsMeshData* oldMesh = nullptr;
@@ -661,7 +665,7 @@ void ReplaceCollisionNodeMesh(
 	}
 
 	{
-		rmt_ScopedCPUSample(ActivateeBodies);
+		rmt_ScopedCPUSample(ActivateeBodies, 0);
 
 		const AABB nodeBounds(node->min, COLLISION_NODE_SIZE);
 
@@ -786,7 +790,7 @@ std::atomic<bool> g_rayCastPending = false;
 
 void CastRayImpl(const glm::vec3& start, const glm::vec3& end)
 {
-	rmt_ScopedCPUSample(Physics_CastRay);
+	rmt_ScopedCPUSample(Physics_CastRay, 0);
 	LVN_ASSERT(std::this_thread::get_id() == g_physicsThread.get_id());
 
 	const btVector3 rayStart = Scale_WorldToPhysics(btVector3(start.x, start.y, start.z));
@@ -840,7 +844,7 @@ vec3 Physics_LastHitNormal()
 
 btRigidBody* SpawnShape(btCollisionShape* shape, const float mass, const vec3& origin)
 {
-	rmt_ScopedCPUSample(SpawnShape);
+	rmt_ScopedCPUSample(SpawnShape, 0);
 
 	btVector3 localInertia;
 	shape->calculateLocalInertia(mass, localInertia);
@@ -997,20 +1001,20 @@ vec3 Physics_GetPlayerPosition()
 
 void Physics_SetPlayerVelocity(const vec3& velocity)
 {
-	EnqueuePhysicsOperation(PhysicsOp_WorldUpdate, [=]()
-	{
+	//EnqueuePhysicsOperation(PhysicsOp_WorldUpdate, [=]() //test
+	//{
 		g_player.velocity = velocity;
-	});
+	//});
 }
 
 // ----------------------------------------------------------------------------
 
 void Physics_PlayerJump()
 {
-	EnqueuePhysicsOperation(PhysicsOp_WorldUpdate, []()
-	{
+	//EnqueuePhysicsOperation(PhysicsOp_WorldUpdate, []() //test
+	//{
 		g_player.jump = true;
-	});
+	//});
 }
 
 // ----------------------------------------------------------------------------

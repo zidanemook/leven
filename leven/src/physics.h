@@ -16,6 +16,7 @@ typedef void* PhysicsHandle;
 
 bool	Physics_Initialise(const AABB& worldBounds);
 void	Physics_Shutdown();
+void	PhysicsThreadFunction();//testcode
 
 std::vector<RenderMesh*> Physics_GetRenderData(const Frustum& frustum);
 
@@ -42,6 +43,7 @@ PhysicsHandle Physics_SpawnCube(const vec3& halfSize, const float mass, const gl
 void PhysicsBody_Free(PhysicsHandle body);
 glm::vec3 PhysicsBody_GetPosition(PhysicsHandle body);
 glm::mat3 PhysicsBody_GetTransform(PhysicsHandle body);
+
 
 // ----------------------------------------------------------------------------
 

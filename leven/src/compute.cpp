@@ -1,3 +1,5 @@
+
+#include	"sdl_wrapper.h"
 #include	"compute.h"
 
 #include	"compute_local.h"
@@ -14,7 +16,7 @@
 #include	"lrucache.h"
 
 #include	<Remotery.h>
-#include	"sdl_wrapper.h"
+
 #include	<functional>
 #include	<sstream>
 #include	<unordered_map>
@@ -138,7 +140,7 @@ int InitialiseContext(ComputeContext* ctx)
 
 	ctx->context = cl::Context(CL_DEVICE_TYPE_GPU, properties);
 	auto devices = ctx->context.getInfo<CL_CONTEXT_DEVICES>();
-	printf("OpenCL found %d devices\n", devices.size());
+	printf("OpenCL found %d devices\n", (int)devices.size());
 	if (devices.empty())
 	{
 		return LVN_CL_ERROR;
@@ -449,7 +451,7 @@ int CompactIndexArray(cl::CommandQueue& queue, cl::Buffer& indexArray,
 
 cl::Buffer RemoveDuplicates(cl::CommandQueue& queue, cl::Buffer& inputData, const int inputCount, unsigned int* resultCount)
 {
-	rmt_ScopedCPUSample(RemoveDuplicates);
+	rmt_ScopedCPUSample(RemoveDuplicates, 0);
 
 	auto ctx = GetComputeContext();
 	cl::Buffer result(ctx->context, CL_MEM_READ_WRITE, inputCount * sizeof(int));

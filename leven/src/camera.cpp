@@ -36,13 +36,16 @@ struct FirstPersonCamera
 		up = yawMatrix * up;
 		up_ = vec3(up);
 
-		position_ = Physics_GetPlayerPosition();
+		//position_ = Physics_GetPlayerPosition(); //testcode
 
 		vec3 velocity;
 		velocity += speed.z * forward_;
 		velocity += speed.y * up_;
 		velocity += speed.x * right_;
 		Physics_SetPlayerVelocity(velocity);
+
+		//testcode
+		position_ += velocity;
 	}
 
 	void getViewAngles(float& x, float& y, float& z)

@@ -28,7 +28,7 @@ int ConstructOctreeFromField(
 	const GPUDensityField& field,
 	GPUOctree* octree)
 {
-	rmt_ScopedCPUSample(ConstructOctree);
+	rmt_ScopedCPUSample(ConstructOctree, 0);
 //	printf("Constuct octree (%d %d %d)\n", min.x, min.y, min.z);
 	Timer timer;
 	timer.start();
@@ -52,7 +52,7 @@ int ConstructOctreeFromField(
 	cl::Buffer d_leafMaterials(ctx->context, CL_MEM_READ_WRITE, chunkBufferSize * sizeof(cl_int));
 	cl::Buffer d_voxelScan(ctx->context, CL_MEM_READ_WRITE, chunkBufferSize * sizeof(int));
 	{
-		rmt_ScopedCPUSample(Find);
+		rmt_ScopedCPUSample(Find, 0);
 
 		int index = 0;
 		cl::Kernel findActiveKernel(meshGen->octreeProgram.get(), "FindActiveVoxels");
@@ -77,7 +77,7 @@ int ConstructOctreeFromField(
 
 	cl::Buffer d_compactLeafEdgeInfo(ctx->context, CL_MEM_READ_WRITE, octree->numNodes * sizeof(int));
 	{
-		rmt_ScopedCPUSample(Compact);
+		rmt_ScopedCPUSample(Compact, 0);
 
 		CL_CALL(CreateBuffer(CL_MEM_READ_WRITE, sizeof(cl_int) * octree->numNodes, nullptr, octree->d_nodeCodes));
 		CL_CALL(CreateBuffer(CL_MEM_READ_WRITE, sizeof(cl_int) * octree->numNodes, nullptr, octree->d_nodeMaterials));
@@ -100,7 +100,7 @@ int ConstructOctreeFromField(
 
 	cl::Buffer d_qefs;
 	{
-		rmt_ScopedCPUSample(Leafs);
+		rmt_ScopedCPUSample(Leafs, 0);
 
 		CL_CALL(CreateBuffer(CL_MEM_READ_WRITE, sizeof(QEFData) * octree->numNodes, nullptr, d_qefs));
 
@@ -126,7 +126,7 @@ int ConstructOctreeFromField(
 	}
 
 	{
-		rmt_ScopedCPUSample(QEF);
+		rmt_ScopedCPUSample(QEF, 0);
 
 		cl_float4 d_worldSpaceOffset = { min.x, min.y, min.z, 0 };
 		cl::Kernel solveQEFs(meshGen->octreeProgram.get(), "SolveQEFs");
@@ -138,7 +138,7 @@ int ConstructOctreeFromField(
 	}
 
 	{
-		rmt_ScopedCPUSample(Cuckoo);
+		rmt_ScopedCPUSample(Cuckoo, 0);
 
 		CL_CALL(Cuckoo_InitialiseTable(&octree->d_hashTable, octree->numNodes));
 		CL_CALL(Cuckoo_InsertKeys(&octree->d_hashTable, octree->d_nodeCodes, octree->numNodes));
@@ -153,7 +153,7 @@ int ConstructOctreeFromField(
 
 int LoadOctree(MeshGenerationContext* meshGen, const ivec3& min, const int clipmapNodeSize, GPUOctree* octree)
 {
-	rmt_ScopedCPUSample(LoadOctree);
+	rmt_ScopedCPUSample(LoadOctree, 0);
 	const ivec4 key(min, clipmapNodeSize);
 	auto iter = meshGen->octreeCache.find(key);
 	if (iter != end(meshGen->octreeCache))
@@ -193,7 +193,7 @@ int GenerateMeshFromOctree(
 	const GPUOctree& octree,
 	MeshBufferGPU* meshBuffer)
 {
-	rmt_ScopedCPUSample(GenerateMeshFromOctree);
+	rmt_ScopedCPUSample(GenerateMeshFromOctree, 0);
 	ComputeContext* ctx = GetComputeContext();
 	int index = 0;
 
@@ -279,7 +279,7 @@ int GatherSeamNodesFromOctree(
 	const GPUOctree& octree,
 	std::vector<SeamNodeInfo>& seamNodeBuffer)
 {
-	rmt_ScopedCPUSample(GatherSeamNodes);
+	rmt_ScopedCPUSample(GatherSeamNodes, 0);
 	auto ctx = GetComputeContext();
 
 	cl::Buffer d_isSeamNode, d_isSeamNodeScan;
@@ -327,7 +327,7 @@ int ExportMeshBuffer(
 	const MeshBufferGPU& gpuBuffer,
 	MeshBuffer* cpuBuffer)
 {
-	rmt_ScopedCPUSample(ExportMesh);
+	rmt_ScopedCPUSample(ExportMesh, 0);
 	cpuBuffer->numVertices = gpuBuffer.countVertices;
 	cpuBuffer->numTriangles = gpuBuffer.countTriangles;
 
@@ -355,7 +355,7 @@ int Compute_GenerateChunkMesh(
 	MeshBuffer* meshBuffer,
 	std::vector<SeamNodeInfo>& seamNodeBuffer)
 {
-	rmt_ScopedCPUSample(Compute_GenerateChunkMesh);
+	rmt_ScopedCPUSample(Compute_GenerateChunkMesh, 0);
 	seamNodeBuffer.clear();
 
 	GPUOctree octree;

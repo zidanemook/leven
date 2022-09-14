@@ -7,8 +7,9 @@
 #include	<random>
 #include	<algorithm>
 
-#include	<CL/cl.hpp>
 #include	"sdl_wrapper.h"
+#include	<CL/cl.hpp>
+
 #include	<glm/glm.hpp>
 #include	<glm/ext.hpp>
 #include	<Remotery.h>
@@ -26,8 +27,6 @@
 #include	"gui.h"
 
 Config g_config;
-
-
 
 // ----------------------------------------------------------------------------
 
@@ -71,37 +70,37 @@ void HandleKeyPress(
 		{
 			case SDLK_w:
 			{
-				input.speed.z = -1.f;
+				input.speed.z = -100.f;
 				break;
 			}
 
 			case SDLK_s:
 			{
-				input.speed.z = 1.f;
+				input.speed.z = 100.f;
 				break;
 			}
 
 			case SDLK_a:
 			{
-				input.speed.x = -1.f;
+				input.speed.x = -100.f;
 				break;
 			}
 			
 			case SDLK_d:
 			{
-				input.speed.x = 1.f;
+				input.speed.x = 100.f;
 				break;
 			}
 			
 			case SDLK_z:
 			{
-				input.speed.y = 1.f;
+				input.speed.y = 100.f;
 				break;
 			}
 
 			case SDLK_x:
 			{
-				input.speed.y = -1.f;
+				input.speed.y = -100.f;
 				break;
 			}
 
@@ -292,12 +291,12 @@ void OnMouseMotion(
 		const float PITCH_SCALE = 0.5f;
 		if (abs(mm->xrel) <= 30)
 		{
-			input.yaw = YAW_SCALE * mm->xrel;
+			input.yaw = YAW_SCALE * mm->xrel * -1;
 		}
 
 		if (abs(mm->yrel) <= 30)
 		{
-			input.pitch = PITCH_SCALE * mm->yrel;
+			input.pitch = PITCH_SCALE * mm->yrel * -1;
 		}
 
 		Viewer_UpdateBrushPosition();
@@ -491,7 +490,7 @@ int main(int argc, char** argv)
 
 		while (SDL_PollEvent(&event))
 		{
-			rmt_ScopedCPUSample(PollEvents);
+			rmt_ScopedCPUSample(PollEvents, 0);
 
 			quit = event.type == SDL_QUIT;
 
@@ -555,7 +554,7 @@ int main(int argc, char** argv)
 		}
 
 		{
-			rmt_ScopedCPUSample(RenderUpdate);
+			rmt_ScopedCPUSample(RenderUpdate, 0);
 			Render_FrameBegin();
 
 			Viewer_Update(deltaT, viewerMode);

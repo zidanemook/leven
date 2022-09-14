@@ -79,7 +79,7 @@ public:
 
 	unsigned int size() const
 	{
-		return materials_.size();
+		return (int)materials_.size();
 	}
 
 	// ----------------------------------------------------------------------------

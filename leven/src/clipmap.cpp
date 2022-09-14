@@ -262,7 +262,7 @@ ClipmapViewTree ConstructClipmapViewTree(
 	const std::vector<ClipmapNode*>& activeNodes,
 	const ivec3& rootMin)
 {
-	rmt_ScopedCPUSample(ConstructViewTree);
+	rmt_ScopedCPUSample(ConstructViewTree, 0);
 
 	ClipmapViewTree tree;
 	tree.allocator = &g_viewAllocators[g_viewAllocCurrent++ & 1];
@@ -362,7 +362,7 @@ bool GenerateMeshDataForNode(
 	OctreeNode** seamNodes,
 	int* numSeamNodes)
 {
-	rmt_ScopedCPUSample(GenerateMeshDataForNode);
+	rmt_ScopedCPUSample(GenerateMeshDataForNode, 0);
 
 	MeshBuffer* buffer = Render_AllocMeshBuffer(tag);
 	if (!buffer)
@@ -415,7 +415,7 @@ bool GenerateMeshDataForNode(
 		}
 
 		*seamNodes = nodeBuffer;
-		*numSeamNodes = seamNodeInfo.size();
+		*numSeamNodes = (int)seamNodeInfo.size();
 	}
 	else
 	{
@@ -435,7 +435,7 @@ int ConstructClipmapNodeData(
 	const float meshMaxEdgeLen,
 	const float meshMaxAngle)
 {
-	rmt_ScopedCPUSample(ConstructClipmapNode);
+	rmt_ScopedCPUSample(ConstructClipmapNode, 0);
 
 	LVN_ASSERT(!node->active_);
 	LVN_ASSERT(!node->renderMesh)
@@ -454,11 +454,11 @@ int ConstructClipmapNodeData(
 	if (meshBuffer)
 	{
 		const vec4 centrePos = vec4(vec3(node->min_) + vec3(node->size_ / 2.f), 0.f);
-		const float leafSize = LEAF_SIZE_SCALE * (node->size_ / CLIPMAP_LEAF_SIZE);
+		const int leafSize = LEAF_SIZE_SCALE * (node->size_ / CLIPMAP_LEAF_SIZE);
 
 		MeshSimplificationOptions options;
-		options.maxError = meshMaxError * leafSize;
-		options.maxEdgeSize = meshMaxEdgeLen * leafSize;
+		options.maxError = meshMaxError * (float)leafSize;
+		options.maxEdgeSize = meshMaxEdgeLen * (float)leafSize;
 		options.minAngleCosine = meshMaxAngle;
 
 		ngMeshSimplifier(meshBuffer, centrePos, options);
@@ -478,7 +478,7 @@ MeshBuffer* ConstructCollisionNodeData(
 	const float meshMaxEdgeLen,
 	const float meshMaxAngle)
 {
-	rmt_ScopedCPUSample(ConstructCollisionNode);
+	rmt_ScopedCPUSample(ConstructCollisionNode, 0);
 
 	LVN_ASSERT(node->numSeamNodes == 0);
 	LVN_ASSERT(!node->seamNodes);
@@ -576,7 +576,7 @@ void GenerateClipmapSeamMesh(
 	const Clipmap& clipmap,
 	const vec3& colour)
 {
-	rmt_ScopedCPUSample(GenClipmapSeamMesh);
+	rmt_ScopedCPUSample(GenClipmapSeamMesh, 0);
 	std::vector<OctreeNode*> seamNodes;
 	seamNodes.reserve(2048);
 	for (int i = 0; i < 8; i++)
@@ -1183,10 +1183,10 @@ void Clipmap::update(
 		return;
 	}
 
-	rmt_ScopedCPUSample(ClipmapUpdate);
+	rmt_ScopedCPUSample(ClipmapUpdate, 0);
 
 	{
-		rmt_ScopedCPUSample(queuedOperations);
+		rmt_ScopedCPUSample(queuedOperations, 0);
 		DeferredClipmapOperationQueue q = GetAllQueuedClipmapOperations();
 		while (!q.empty())
 		{
@@ -1199,20 +1199,20 @@ void Clipmap::update(
 
 	std::vector<ClipmapNode*> selectedNodes;
 	{
-		rmt_ScopedCPUSample(SelectNodes);
+		rmt_ScopedCPUSample(SelectNodes, 0);
 		SelectActiveClipmapNodes(clipmapMeshGen_, root_, false, cameraPosition, selectedNodes);
 	}
 
 	// release the nodes invalidated due to not being active or an insert/remove
 	std::vector<RenderMesh*> invalidatedMeshes;
 	{
-		rmt_ScopedCPUSample(ReleaseInvalidated);
+		rmt_ScopedCPUSample(ReleaseInvalidated, 0);
 		ReleaseInvalidatedNodes(clipmapMeshGen_, root_, invalidatedMeshes);
 	}
 
 	std::vector<ClipmapNode*> filteredNodes, reserveNodes, activeNodes;
 	{
-		rmt_ScopedCPUSample(FilterNodes);
+		rmt_ScopedCPUSample(FilterNodes, 0);
 		for (ClipmapNode* node: selectedNodes)
 		{
 			if (!node->active_ && !node->empty_)
@@ -1305,7 +1305,7 @@ void Clipmap::update(
 
 	std::unordered_set<ClipmapNode*> seamUpdateNodes;
 	{
-		rmt_ScopedCPUSample(findSeamNodes);
+		rmt_ScopedCPUSample(findSeamNodes, 0);
 
 		for (ClipmapNode* node: constructedNodes)
 		{
@@ -1347,12 +1347,12 @@ void Clipmap::loadCollisionNodes(
 	const std::vector<ivec3>& requestedNodes,
 	const std::vector<glm::ivec3>& requestedSeamNodes)
 {
-	rmt_ScopedCPUSample(loadCollisionNodes);
+	rmt_ScopedCPUSample(loadCollisionNodes, 0);
 
 	std::vector<ClipmapCollisionNode*> constructedNodes;
 	for (const ivec3& min: requestedNodes)
 	{
-		rmt_ScopedCPUSample(ProcessNode);
+		rmt_ScopedCPUSample(ProcessNode, 0);
 
 		const auto iter = g_clipmapCollisionNodes.find(min);
 		if (iter != end(g_clipmapCollisionNodes))
@@ -1385,7 +1385,7 @@ void Clipmap::loadCollisionNodes(
 	}
 
 	{
-		rmt_ScopedCPUSample(GenerateCollisionSeam);
+		rmt_ScopedCPUSample(GenerateCollisionSeam, 0);
 		const vec3 colour = RandomColour();
 		for (const ivec3& min: requestedSeamNodes)
 		{
@@ -1622,7 +1622,7 @@ void Clipmap::queueCSGOperation(
 	const int brushMaterial, 
 	const bool isAddOperation)
 {
-	rmt_ScopedCPUSample(QueueCSGOperation);
+	rmt_ScopedCPUSample(QueueCSGOperation, 0);
 
 	CSGOperationInfo opInfo;
 	opInfo.origin = vec4((origin / (float)LEAF_SIZE_SCALE) + CSG_OFFSET, 0.f);
@@ -1646,7 +1646,7 @@ AABB CalcCSGOperationBounds(const CSGOperationInfo& opInfo)
 
 void Clipmap::processCSGOperationsImpl()
 {
-	rmt_ScopedCPUSample(ProcessCSGOps);
+	rmt_ScopedCPUSample(ProcessCSGOps, 0);
 
 	std::vector<CSGOperationInfo> operations;
 	{
@@ -1675,7 +1675,7 @@ void Clipmap::processCSGOperationsImpl()
 	std::vector<ivec3> touchedCollisionNodes;
 	for (auto clipmapNode: touchedNodes)
 	{
-		rmt_ScopedCPUSample(processNode);
+		rmt_ScopedCPUSample(processNode, 0);
 		if (clipmapNode->size_ == COLLISION_NODE_SIZE)
 		{
 			const ivec3 collisionNodeMin = clipmapNode->min_ & ~(COLLISION_NODE_SIZE - 1);

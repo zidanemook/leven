@@ -84,7 +84,7 @@ public:
 		const int numIndices, 
 		const void* indexData)
 	{
-		rmt_ScopedCPUSample(UploadData);
+		rmt_ScopedCPUSample(UploadData, 0);
 
 		initialise(initVertexArrayFn);
 
@@ -93,7 +93,7 @@ public:
 		LVN_ASSERT(vbuffer_ > 0);
 
 		{
-			rmt_ScopedCPUSample(BufferData);
+			rmt_ScopedCPUSample(BufferData, 0);
 
 			glBindVertexArray(vao_);		
 
@@ -138,16 +138,16 @@ private:
 
 	void initialise(InitVertexArrayFn initVertexArray)
 	{
-		rmt_ScopedCPUSample(MeshInitialise);
+		rmt_ScopedCPUSample(MeshInitialise, 0);
 
 		if (vao_ > 0)
 		{
-			rmt_ScopedCPUSample(Destroy);
+			rmt_ScopedCPUSample(Destroy, 0);
 			destroy();
 		}
 
 		{
-			rmt_ScopedCPUSample(Init);
+			rmt_ScopedCPUSample(Init, 0);
 //			rmt_ScopedOpenGLSample(Init);
 
 			{

@@ -96,17 +96,8 @@
     <ClCompile Include="src\compute_density_field.cpp">
       <Filter>Voxel</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\imgui\imgui.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui_handlers.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\compute_program.cpp">
       <Filter>Voxel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\imgui\imgui_draw.cpp">
-      <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\gui.cpp">
       <Filter>Viewer</Filter>
@@ -119,9 +110,6 @@
     </ClCompile>
     <ClCompile Include="src\test_allocator.cpp">
       <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Remotery\lib\Remotery.c">
-      <Filter>Remotery</Filter>
     </ClCompile>
     <ClCompile Include="src\physics.cpp">
       <Filter>Viewer</Filter>
@@ -155,6 +143,18 @@
     </ClCompile>
     <ClCompile Include="src\ng_mesh_simplify.cpp">
       <Filter>Voxel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Remotery\lib\Remotery.c">
+      <Filter>Remotery</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui_handlers.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-1.49\imgui.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-1.49\imgui_draw.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +212,6 @@
     <ClInclude Include="src\config.h">
       <Filter>Viewer</Filter>
     </ClInclude>
-    <ClInclude Include="src\force_include.h">
-      <Filter>Viewer</Filter>
-    </ClInclude>
     <ClInclude Include="src\log.h">
       <Filter>Viewer</Filter>
     </ClInclude>
@@ -239,9 +236,6 @@
     <ClInclude Include="src\compute_cuckoo.h">
       <Filter>Voxel</Filter>
     </ClInclude>
-    <ClInclude Include="src\imgui_handlers.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\materials.h">
       <Filter>Voxel</Filter>
     </ClInclude>
@@ -259,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="src\render_local.h">
       <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Remotery\lib\Remotery.h">
-      <Filter>Remotery</Filter>
     </ClInclude>
     <ClInclude Include="src\physics.h">
       <Filter>Viewer</Filter>
@@ -301,6 +292,15 @@
     </ClInclude>
     <ClInclude Include="src\ng_mesh_simplify.h">
       <Filter>Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Remotery\lib\Remotery.h">
+      <Filter>Remotery</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui_handlers.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\force_include.h">
+      <Filter>Viewer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

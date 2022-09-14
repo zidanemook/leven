@@ -137,7 +137,7 @@ int Compute_SetNoiseSeed(const int noiseSeed)
 
 int GenerateDefaultDensityField(MeshGenerationContext* meshGen, GPUDensityField* field)
 {
-	rmt_ScopedCPUSample(GenerateField);
+	rmt_ScopedCPUSample(GenerateField, 0);
 
 	auto ctx = GetComputeContext();
 
@@ -164,7 +164,7 @@ int GenerateDefaultDensityField(MeshGenerationContext* meshGen, GPUDensityField*
 
 int FindDefaultEdges(MeshGenerationContext* meshGen, GPUDensityField* field)
 {
-	rmt_ScopedCPUSample(FindDefaultEdges);
+	rmt_ScopedCPUSample(FindDefaultEdges, 0);
 
 	cl_int4 fieldOffset;
 	fieldOffset.s[0] = field->min.x / LEAF_SIZE_SCALE;
@@ -234,7 +234,7 @@ int FindDefaultEdges(MeshGenerationContext* meshGen, GPUDensityField* field)
 
 int LoadDensityField(MeshGenerationContext* meshGen, const glm::ivec3& min, const int clipmapNodeSize, GPUDensityField* field)
 {
-	rmt_ScopedCPUSample(LoadDensityField);
+	rmt_ScopedCPUSample(LoadDensityField, 0);
 
 	const glm::ivec4 key(min, clipmapNodeSize);
 	const auto iter = meshGen->densityFieldCache.find(key);

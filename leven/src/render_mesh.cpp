@@ -97,7 +97,7 @@ static bool InitialiseMesh(
 	const u32 vertexSize,
 	MeshBuffer* buffer)
 {
-	rmt_ScopedCPUSample(InitMesh);
+	rmt_ScopedCPUSample(InitMesh, 0);
 
 	// TODO setPosition broken since the vertices are specified with absolute/world coords!
 	//	mesh->setPosition(position);
@@ -192,7 +192,7 @@ void Render_FreeRenderMesh(RenderMesh** mesh)
 
 void MeshBuffer::initialiseVertexArray()
 {
-	rmt_ScopedCPUSample(InitVertexAttrib);
+	rmt_ScopedCPUSample(InitVertexAttrib, 0);
 
 	// xyz
 	glEnableVertexAttribArray(0);
@@ -211,7 +211,7 @@ void MeshBuffer::initialiseVertexArray()
 
 void ActorMeshBuffer::initialiseVertexArray()
 {
-	rmt_ScopedCPUSample(InitVertexAttrib_Actor);
+	rmt_ScopedCPUSample(InitVertexAttrib_Actor, 0);
 
 	// xyz
 	glEnableVertexAttribArray(0);

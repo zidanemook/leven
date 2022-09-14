@@ -4,7 +4,8 @@
 #include "sdl_wrapper.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <hash_map>
+#include <map>
+#include <vector>
 
 class GLSLProgram
 {
@@ -45,7 +46,7 @@ private:
 	std::string				filePath_;
 
 	// Hash the locations of the uniforms to prevent glGet calls during frames
-	typedef std::hash_map<std::string, GLint> UniformLocations;
+	typedef std::map<std::string, GLint> UniformLocations;
 	UniformLocations		uniformLocations_;
 
 	const GLint getUniformLocation(const std::string& name);

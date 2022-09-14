@@ -1110,7 +1110,7 @@ std::atomic<int> g_renderFrameCount = 0;
 
 bool Render_DispatchCommands()
 {
-	rmt_ScopedCPUSample(Render_DispatchCmds);
+	rmt_ScopedCPUSample(Render_DispatchCmds, 0);
 
 	int count = 0;
 
@@ -1169,7 +1169,7 @@ void Render_FrameAddActorMesh(RenderMesh* mesh)
 
 void Render_DrawFrame()
 {
-	rmt_ScopedCPUSample(Render_DrawFrame);
+	rmt_ScopedCPUSample(Render_DrawFrame, 0);
 	renderer.drawFrame(g_frameMeshList, g_frameActorMeshList);
 }
 
@@ -1272,7 +1272,7 @@ void Render_UpdatePreviewMaterial(const int materialID)
 
 void Render_DebugPrintFrameNumber()
 {
-	printf("Frame #: %d\n", g_renderFrameCount);
+	printf("Frame #: %d\n", g_renderFrameCount.load());
 }
 
 // ----------------------------------------------------------------------------

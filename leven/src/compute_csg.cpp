@@ -15,7 +15,7 @@ int ApplyCSGOperations(
 	const int clipmapNodeSize,
 	GPUDensityField& field)
 {
-	rmt_ScopedCPUSample(ApplyCSGOperations);
+	rmt_ScopedCPUSample(ApplyCSGOperations, 0);
 
 	if (opInfo.empty())
 	{
@@ -35,7 +35,7 @@ int ApplyCSGOperations(
 	u32 numUpdatedPoints = 0;
 	cl::Buffer d_compactUpdatedPoints, d_compactUpdatedMaterials;
 	{
-		rmt_ScopedCPUSample(Apply);
+		rmt_ScopedCPUSample(Apply, 0);
 
 		const int fieldBufferSize = meshGen->fieldSize * meshGen->fieldSize * meshGen->fieldSize; 
 		cl::Buffer d_updatedIndices(ctx->context, CL_MEM_READ_WRITE, fieldBufferSize * sizeof(int));
@@ -92,7 +92,7 @@ int ApplyCSGOperations(
 	unsigned int numInvalidatedEdges = 0;
 	cl::Buffer d_invalidatedEdges;
 	{
-		rmt_ScopedCPUSample(Filter);
+		rmt_ScopedCPUSample(Filter, 0);
 
 		const int numGeneratedEdges = numUpdatedPoints * 6;
 	//	printf("# generated edges: %d\n", numGeneratedEdges);
@@ -139,7 +139,7 @@ int ApplyCSGOperations(
 
 	if (numInvalidatedEdges > 0 && field.numEdges > 0)
 	{
-		rmt_ScopedCPUSample(Prune);
+		rmt_ScopedCPUSample(Prune, 0);
 
 		cl::Buffer d_fieldEdgeValidity(ctx->context, CL_MEM_READ_WRITE, field.numEdges * sizeof(int));
 
@@ -177,7 +177,7 @@ int ApplyCSGOperations(
 
 	if (numCreatedEdges > 0)
 	{
-		rmt_ScopedCPUSample(Create);
+		rmt_ScopedCPUSample(Create, 0);
 
 		cl::Buffer d_createdNormals = cl::Buffer(ctx->context, CL_MEM_READ_WRITE, numCreatedEdges * sizeof(glm::vec4));
 
