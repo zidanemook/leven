@@ -1,3 +1,14 @@
+Copied leven source code
+
+migrated for visual studio 2022
+added libraries
+excluded bullet physics
+
+-mook-
+
+
+
+
 # leven
 Complete source for my experimental voxel engine which features in posts on my blog: http://ngildea.blogspot.co.uk/
 
