@@ -69,7 +69,8 @@ bool Viewer_Initialise(const int worldBrickCountXZ, const glm::mat4& projection,
 	const AABB worldBounds(worldOrigin - (worldSize / 2), worldOrigin + (worldSize / 2));
 
 	Render_SetWorldBounds(worldBounds.min, worldBounds.max);
-	//Physics_Initialise(worldBounds);//test
+	//Physics_Initialise(worldBounds);
+	InitialiseWorldNodes();
 	g_volume.initialise(ivec3(Camera_GetPosition()), worldBounds);
 	Actor_Initialise(worldBounds);
 

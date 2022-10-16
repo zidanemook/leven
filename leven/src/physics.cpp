@@ -476,7 +476,7 @@ bool Physics_Initialise(const AABB& worldBounds)
 
 	g_solver = new btSequentialImpulseConstraintSolver;
 	g_dynamicsWorld = new btDiscreteDynamicsWorld(g_dispatcher, g_broadphase, g_solver, g_collisionCfg);
-	g_dynamicsWorld->getPairCache();
+
 	g_dynamicsWorld->setGravity(btVector3(0, -9.8f, 0));
 	g_dynamicsWorld->getSolverInfo().m_solverMode |= SOLVER_ENABLE_FRICTION_DIRECTION_CACHING;
 	g_dynamicsWorld->getSolverInfo().m_numIterations = 5;

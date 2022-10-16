@@ -207,7 +207,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>LEVEN;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Remotery\lib;$(SolutionDir)\bullet3-2.86.1\src;$(SolutionDir)\imgui-1.49;c:\dev\Catch\include;D:\Program Files\cuda\include;$(SolutionDir)\glew64-1.9.0\include;$(SolutionDir)\glm-0.9.3.4;$(SolutionDir)\SDL2-2.24.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Remotery\lib;$(SolutionDir)\bullet3-2.86.1\src;$(SolutionDir)\imgui-1.49;c:\dev\Catch\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include;$(SolutionDir)\glew64-1.9.0\include;$(SolutionDir)\glm-0.9.3.4;$(SolutionDir)\SDL2-2.24.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForcedIncludeFiles>force_include.h</ForcedIncludeFiles>
@@ -217,7 +217,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\bullet3-2.86.1\bin;$(SolutionDir)\SDL2-2.24.0\lib\x64\Debug;$(SolutionDir)\glew64-1.9.0\lib;D:\Program Files\cuda\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\bullet3-2.86.1\bin;$(SolutionDir)\SDL2-2.24.0\lib\x64\Debug;$(SolutionDir)\glew64-1.9.0\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenCL.lib;SDL2.lib;SDL2main.lib;glew32.lib;opengl32.lib;glu32.lib;LinearMath_vs2022_x64_debug.lib;BulletCollision_vs2022_x64_debug.lib;BulletDynamics_vs2022_x64_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>
       </StackReserveSize>

@@ -16,7 +16,8 @@ typedef void* PhysicsHandle;
 
 bool	Physics_Initialise(const AABB& worldBounds);
 void	Physics_Shutdown();
-void	PhysicsThreadFunction();//testcode
+
+void	InitialiseWorldNodes();//testcode
 
 std::vector<RenderMesh*> Physics_GetRenderData(const Frustum& frustum);
 

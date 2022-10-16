@@ -227,8 +227,12 @@ int Compute_ApplyCSGOperations(
 	const glm::ivec3& clipmapNodeMin,
 	const int clipmapNodeSize)
 {
-//	printf("Apply: %d %d %d\n", clipmapNodeMin.x, clipmapNodeMin.y, clipmapNodeMin.z);
-//	printf("  origin: %.1f %.1f %.1f\n", opInfo.origin.x, opInfo.origin.y, opInfo.origin.z);
+	/*printf("Apply: %d %d %d\n", clipmapNodeMin.x, clipmapNodeMin.y, clipmapNodeMin.z);
+	for (size_t i = 0; i != opInfo.size(); ++i)
+	{
+		printf("  origin: %.1f %.1f %.1f\n", opInfo[i].origin.x, opInfo[i].origin.y, opInfo[i].origin.z);
+	}*/
+	
 
 	GPUDensityField field;
 	CL_CALL(LoadDensityField(meshGen, clipmapNodeMin, clipmapNodeSize, &field));
